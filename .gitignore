@@ -23,7 +23,6 @@ yarn-error.log
 /.vscode
 /.zed
 .editorconfig
-.env.example
 .gitattributes
 .github/
 .prettierignore

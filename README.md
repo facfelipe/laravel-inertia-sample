@@ -176,6 +176,102 @@ npm run build
 php artisan serve
 ```
 
+## 🌐 Real-time WebSocket Setup
+
+This application includes **real-time broadcasting** for live updates of medical records. You can choose between two WebSocket solutions:
+
+### Option 1: Laravel Reverb (Recommended) 🚀
+
+**Laravel Reverb** is the official, first-party WebSocket server for Laravel 12. It's self-hosted, fast, and free.
+
+**Setup:**
+```bash
+# Reverb is already installed, just configure your .env:
+BROADCAST_DRIVER=reverb
+REVERB_APP_ID=local
+REVERB_APP_KEY=local
+REVERB_APP_SECRET=local
+REVERB_HOST=localhost
+REVERB_PORT=8080
+REVERB_SCHEME=http
+
+# Frontend configuration
+VITE_REVERB_APP_KEY="${REVERB_APP_KEY}"
+VITE_REVERB_HOST="${REVERB_HOST}"
+VITE_REVERB_PORT="${REVERB_PORT}"
+VITE_REVERB_SCHEME="${REVERB_SCHEME}"
+
+# Start the Reverb server
+php artisan reverb:start
+
+# In another terminal, start the queue worker
+php artisan queue:work
+```
+
+**Advantages:**
+- ✅ Official Laravel package
+- ✅ Self-hosted (no external dependencies)
+- ✅ High performance
+- ✅ Built-in monitoring with Laravel Pulse
+- ✅ Free to use
+
+### Option 2: Pusher.com Service 📡
+
+**Pusher** is a managed WebSocket service (requires account signup).
+
+**Setup:**
+```bash
+# Sign up at https://pusher.com and create an app
+# Then configure your .env:
+BROADCAST_DRIVER=pusher
+PUSHER_APP_ID=your_app_id
+PUSHER_APP_KEY=your_app_key
+PUSHER_APP_SECRET=your_app_secret
+PUSHER_APP_CLUSTER=mt1
+
+# Frontend configuration
+VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+
+# Start the queue worker
+php artisan queue:work
+```
+
+### Testing Real-time Features
+
+1. **Start your chosen WebSocket service** (Reverb or Pusher)
+2. **Open multiple browser tabs** with your application
+3. **Navigate to the Home page** or Medical Records page
+4. **Create a new medical record** in one tab
+5. **Watch real-time updates** appear in other tabs automatically! ✨
+
+**Test Broadcasting Command:**
+```bash
+# Test with the latest medical record
+php artisan test:websocket
+
+# Test with a specific record ID
+php artisan test:websocket --record-id=1
+```
+
+### Real-time Features Included
+
+- 📊 **Live Statistics**: Dashboard metrics update in real-time
+- 📋 **Medical Records Table**: New records appear instantly
+- 🔄 **Status Updates**: Record status changes broadcast immediately
+- 🟢 **Connection Status**: Visual indicator shows WebSocket connection
+- 🔄 **Auto-reconnection**: Handles connection drops gracefully
+
+### Troubleshooting
+
+**No real-time updates?**
+- Check browser console for WebSocket connection logs
+- Ensure queue worker is running: `php artisan queue:work`
+- For Reverb: Verify server is running: `php artisan reverb:start`
+- Test broadcasting: `php artisan test:websocket`
+
+**See detailed setup guide:** `docs/ENVIRONMENT_SETUP.md`
+
 ## 🚀 Development Commands
 
 Laravel 12 includes modern development scripts for enhanced productivity:
