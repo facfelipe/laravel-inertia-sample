@@ -35,6 +35,11 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
+
+            // Enable broadcast routes for WebSocket authentication
+            if (file_exists(base_path('routes/channels.php'))) {
+                require base_path('routes/channels.php');
+            }
         });
     }
 } 
