@@ -13,13 +13,30 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create a default admin user if it doesn't exist
+        // Create a default staff user if it doesn't exist
         User::firstOrCreate(
-            ['email' => 'admin@example.com'],
+            ['email' => 'staff@example.com'],
             [
-                'name' => 'Admin User',
+                'name' => 'Staff User',
+                'role' => User::ROLE_STAFF,
                 'password' => Hash::make('password'),
             ]
         );
+
+        // Create a default doctor user if it doesn't exist
+        User::firstOrCreate(
+            ['email' => 'doctor@example.com'],
+            [
+                'name' => 'Dr. Smith',
+                'role' => User::ROLE_DOCTOR,
+                'password' => Hash::make('password'),
+            ]
+        );
+
+        // Update existing admin user to have staff role
+        $adminUser = User::where('email', 'admin@example.com')->first();
+        if ($adminUser && !$adminUser->role) {
+            $adminUser->update(['role' => User::ROLE_STAFF]);
+        }
     }
 } 
