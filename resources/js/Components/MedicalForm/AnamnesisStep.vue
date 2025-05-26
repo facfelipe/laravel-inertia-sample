@@ -333,12 +333,12 @@
       <button 
         @click="nextStep" 
         @keydown.alt.n.prevent="nextStep"
-        class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+        class="ml-3 inline-flex justify-center items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
         :disabled="isSubmitting"
         aria-describedby="next-button-help"
         ref="nextButtonRef"
       >
-        <span v-if="isSubmitting" role="status" aria-live="polite">
+        <span v-if="isSubmitting" class="flex items-center" role="status" aria-live="polite">
           <span class="sr-only">Saving anamnesis data, please wait...</span>
           <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -346,7 +346,7 @@
           </svg>
           Saving...
         </span>
-        <span v-else>
+        <span v-else class="flex items-center">
           <svg class="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
           </svg>

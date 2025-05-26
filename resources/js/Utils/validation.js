@@ -47,36 +47,42 @@ export const validateAnamnesis = (anamnesisData) => {
   const errors = {}
   
   // Blood pressure format: systolic/diastolic (e.g., 120/80)
-  if (anamnesisData.blood_pressure.trim() && !isValidBloodPressure(anamnesisData.blood_pressure)) {
+  if (anamnesisData.blood_pressure && typeof anamnesisData.blood_pressure === 'string' && 
+      anamnesisData.blood_pressure.trim() && !isValidBloodPressure(anamnesisData.blood_pressure)) {
     errors.blood_pressure = 'Blood pressure should be in format: 120/80'
   }
   
   // Temperature must be a number between 35-42°C
-  if (anamnesisData.temperature && (isNaN(anamnesisData.temperature) || 
+  if (anamnesisData.temperature !== null && anamnesisData.temperature !== undefined && 
+      anamnesisData.temperature !== '' && (isNaN(anamnesisData.temperature) || 
       anamnesisData.temperature < 35 || anamnesisData.temperature > 42)) {
     errors.temperature = 'Temperature should be between 35-42°C'
   }
   
   // Heart rate must be a number between 40-200 bpm
-  if (anamnesisData.heart_rate && (isNaN(anamnesisData.heart_rate) || 
+  if (anamnesisData.heart_rate !== null && anamnesisData.heart_rate !== undefined && 
+      anamnesisData.heart_rate !== '' && (isNaN(anamnesisData.heart_rate) || 
       anamnesisData.heart_rate < 40 || anamnesisData.heart_rate > 200)) {
     errors.heart_rate = 'Heart rate should be between 40-200 bpm'
   }
   
   // Respiratory rate must be a number between 8-40 breaths per minute
-  if (anamnesisData.respiratory_rate && (isNaN(anamnesisData.respiratory_rate) || 
+  if (anamnesisData.respiratory_rate !== null && anamnesisData.respiratory_rate !== undefined && 
+      anamnesisData.respiratory_rate !== '' && (isNaN(anamnesisData.respiratory_rate) || 
       anamnesisData.respiratory_rate < 8 || anamnesisData.respiratory_rate > 40)) {
     errors.respiratory_rate = 'Respiratory rate should be between 8-40 breaths per minute'
   }
   
   // Weight must be a number (in kg)
-  if (anamnesisData.weight && (isNaN(anamnesisData.weight) || 
+  if (anamnesisData.weight !== null && anamnesisData.weight !== undefined && 
+      anamnesisData.weight !== '' && (isNaN(anamnesisData.weight) || 
       anamnesisData.weight < 0 || anamnesisData.weight > 500)) {
     errors.weight = 'Weight should be between 0-500 kg'
   }
   
   // Height must be a number (in cm)
-  if (anamnesisData.height && (isNaN(anamnesisData.height) || 
+  if (anamnesisData.height !== null && anamnesisData.height !== undefined && 
+      anamnesisData.height !== '' && (isNaN(anamnesisData.height) || 
       anamnesisData.height < 50 || anamnesisData.height > 250)) {
     errors.height = 'Height should be between 50-250 cm'
   }
