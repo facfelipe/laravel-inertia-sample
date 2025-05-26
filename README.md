@@ -15,7 +15,7 @@ A **sample medical records management application** built with **Laravel 12**, *
 
 ### Tech Stack
 - **Backend**: Laravel 12.x, PHP 8.2+
-- **Frontend**: Vue 3.5, Inertia.js 2.0, TypeScript 5.2
+- **Frontend**: Vue 3.5, Inertia.js 2.0
 - **Build Tools**: Vite 6.2, TailwindCSS 4.1
 - **Database**: PostgreSQL 13+
 - **Testing**: Pest 3.8, PHPUnit
@@ -45,7 +45,7 @@ A **sample medical records management application** built with **Laravel 12**, *
 - **Database Relationship Consistency**: Foreign key constraints and indexing patterns
 
 ### Frontend Architecture  
-- **Vue 3 Composition API**: Modern reactive component patterns with TypeScript
+- **Vue 3 Composition API**: Modern reactive component patterns
 - **Inertia.js 2.0**: Seamless SPA experience without API complexity
 - **Pinia Store**: Centralized state management with persistence
 - **Component Composition**: Reusable, modular component design
@@ -69,9 +69,9 @@ class MedicalRecordFilter {
 ```
 
 #### 2. URL-Based State Management
-```typescript
+```javascript
 // Form step state persisted in URL for refresh-safe navigation
-function updateStepInUrl(step: number) {
+function updateStepInUrl(step) {
     const url = new URL(window.location)
     url.searchParams.set('step', step.toString())
     router.visit(url.toString(), {
@@ -107,7 +107,6 @@ function updateStepInUrl(step: number) {
 - **Error Handling**: Graceful error management with user notifications
 - **Data Validation**: Server-side validation with Form Requests
 - **Performance Optimization**: Query optimization and caching
-- **TypeScript Support**: Full type safety across the frontend
 - **Modern Build Pipeline**: Vite 6.2 with HMR and optimized builds
 
 ## 📸 Screenshots
@@ -213,7 +212,7 @@ npm run build:ssr
 npm run format
 npm run format:check
 
-# ESLint for TypeScript/Vue
+# ESLint for Vue
 npm run lint
 ```
 
@@ -238,7 +237,7 @@ resources/
 │   ├── Pages/                    # Inertia page components
 │   ├── Stores/                   # Pinia state stores
 │   ├── Layouts/                  # Layout components
-│   └── types/                    # TypeScript definitions
+│   └── Utils/                    # Utility functions
 └── css/                          # Tailwind CSS
 
 database/
@@ -445,58 +444,4 @@ Since this is an Inertia.js application, we use server-side routing:
 
 ### Patients
 - `GET /patients` - Index with search functionality
-- `GET /patients/create` - Create form  
-- `POST /patients` - Store new patient
-- `GET /patients/{id}` - Show patient details
-- `GET /patients/{id}/edit` - Edit form
-- `PUT /patients/{id}` - Update patient
-- `DELETE /patients/{id}` - Delete patient
-
-### Anamnesis (Vital Signs)
-- `POST /patients/{patientId}/anamneses` - Store/update patient vital signs
-
-## 📈 Future Enhancements
-
-### Immediate Improvements
-- [ ] Add comprehensive component testing with Vue Test Utils
-- [ ] Implement Redis caching layer for better performance
-- [ ] Add database indexes for optimized queries
-- [ ] Implement soft deletes for data recovery
-- [ ] Add CSV/PDF export functionality for reports
-
-### Advanced Features
-- [ ] Real-time notifications with WebSockets
-- [ ] Advanced reporting and analytics dashboard
-- [ ] Document upload and management for medical records
-- [ ] Appointment scheduling system
-- [ ] Medical imaging integration
-- [ ] Multi-language support
-
-### Production Readiness
-- [ ] Implement authentication and authorization system
-- [ ] Add comprehensive API documentation
-- [ ] Set up monitoring and logging infrastructure
-- [ ] Implement backup and disaster recovery
-- [ ] Add comprehensive error tracking
-
-## 🎯 Demo Purpose
-
-This application is built for **demonstration purposes** to showcase:
-
-- **Modern Full-Stack Architecture**: Laravel + Vue 3 + Inertia.js integration
-- **Enterprise Patterns**: Service layers, repositories, and clean code principles
-- **Advanced Frontend Techniques**: Multi-step forms, state management, and real-time UI updates
-- **Database Design**: Proper relationships and data modeling for medical systems
-- **Testing Best Practices**: Comprehensive test coverage with meaningful assertions
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+- `GET /patients/create`
