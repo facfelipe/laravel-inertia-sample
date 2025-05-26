@@ -1,5 +1,6 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
+import UserRoleSelector from '@/Components/UserRoleSelector.vue';
 
 const props = defineProps({
   title: String
@@ -20,6 +21,9 @@ const props = defineProps({
             <Link href="/patients" class="text-white px-3 py-2 rounded-md hover:bg-blue-700 transition-colors">Patients</Link>
             <Link href="/medical-records" class="text-white px-3 py-2 rounded-md hover:bg-blue-700 transition-colors">Medical Records</Link>
             <Link href="/medical-form" class="bg-green-600 text-white px-3 py-2 rounded-md hover:bg-green-700 transition-colors">New Record</Link>
+            
+            <!-- User Role Selector -->
+            <UserRoleSelector />
           </div>
         </div>
       </div>
