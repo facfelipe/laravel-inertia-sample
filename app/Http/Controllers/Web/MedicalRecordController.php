@@ -41,7 +41,8 @@ class MedicalRecordController extends Controller
         return Inertia::render('MedicalRecords/Index', [
             'medicalRecords' => $medicalRecords,
             'filters' => $filters,
-            'stats' => $stats
+            'stats' => $stats,
+            'availableStatuses' => MedicalRecord::getStatuses()
         ]);
     }
 
@@ -160,6 +161,107 @@ class MedicalRecordController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('medical-records.index')
                 ->with('error', 'Failed to delete medical record: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Start consultation - change status to Attending
+     */
+    public function startConsultation($id)
+    {
+        try {
+            $medicalRecord = $this->medicalRecordService->getById($id);
+            
+            if (!$medicalRecord) {
+                return redirect()->route('medical-records.index')
+                    ->with('error', 'Medical record not found');
+            }
+            
+            // Change status to Attending
+            $medicalRecord->setStatus(MedicalRecord::STATUS_ATTENDING);
+            
+            return redirect()->route('medical-records.consultation', $id)
+                ->with('success', 'Consultation started successfully');
+                
+        } catch (\Exception $e) {
+            return redirect()->route('medical-records.index')
+                ->with('error', 'Failed to start consultation: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Show consultation page
+     */
+    public function consultation($id)
+    {
+        $medicalRecord = $this->medicalRecordService->getById($id);
+        
+        if (!$medicalRecord) {
+            return redirect()->route('medical-records.index')
+                ->with('error', 'Medical record not found');
+        }
+        
+        $patient = $this->patientService->getById($medicalRecord->patient_id);
+        
+        $anamnesis = null;
+        if ($medicalRecord->anamnesis_id) {
+            $anamnesis = $this->anamnesisService->getById($medicalRecord->anamnesis_id);
+        }
+
+        // Get status history
+        $statusHistory = $medicalRecord->statuses()
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        return Inertia::render('MedicalRecords/Consultation', [
+            'record' => $medicalRecord,
+            'patient' => $patient,
+            'anamnesis' => $anamnesis,
+            'statusHistory' => $statusHistory,
+            'availableStatuses' => [
+                MedicalRecord::STATUS_FINALIZED,
+                MedicalRecord::STATUS_NEEDS_FOLLOWUP
+            ]
+        ]);
+    }
+
+    /**
+     * Update consultation and status
+     */
+    public function updateConsultation(Request $request, $id)
+    {
+        $request->validate([
+            'diagnosis' => 'required|string|max:1000',
+            'treatment' => 'required|string|max:1000',
+            'notes' => 'nullable|string|max:1000',
+            'status' => 'required|in:' . MedicalRecord::STATUS_FINALIZED . ',' . MedicalRecord::STATUS_NEEDS_FOLLOWUP
+        ]);
+
+        try {
+            $medicalRecord = $this->medicalRecordService->getById($id);
+            
+            if (!$medicalRecord) {
+                return redirect()->route('medical-records.index')
+                    ->with('error', 'Medical record not found');
+            }
+            
+            // Update the medical record
+            $medicalRecord->update([
+                'diagnosis' => $request->diagnosis,
+                'treatment' => $request->treatment,
+                'notes' => $request->notes
+            ]);
+            
+            // Update status
+            $medicalRecord->setStatus($request->status);
+            
+            return redirect()->route('medical-records.show', $id)
+                ->with('success', 'Consultation completed successfully');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to complete consultation: ' . $e->getMessage())
+                ->withInput();
         }
     }
 }

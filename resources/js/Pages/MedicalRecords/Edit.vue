@@ -189,7 +189,7 @@ const form = useForm({
   patient_id: props.record?.patient_id || props.patient?.id || null
 });
 
-// If anamnesis exists, set up form for updating it
+// If anamnesis exists, set up form for updating it (not implemented in this fix)
 const anamnesisForm = useForm({
   blood_pressure: props.anamnesis?.blood_pressure || '',
   temperature: props.anamnesis?.temperature || '',

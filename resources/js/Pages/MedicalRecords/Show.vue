@@ -54,6 +54,22 @@
               </div>
               
               <div class="bg-gray-50 px-4 py-5 grid grid-cols-3 gap-4">
+                <dt class="text-sm font-medium text-gray-500">Current Status</dt>
+                <dd class="text-sm text-gray-900 col-span-2">
+                  <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full" 
+                        :class="{
+                          'bg-yellow-100 text-yellow-800': currentStatus === 'Pending',
+                          'bg-blue-100 text-blue-800': currentStatus === 'Attending',
+                          'bg-green-100 text-green-800': currentStatus === 'Finalized',
+                          'bg-orange-100 text-orange-800': currentStatus === 'Needs Follow-up',
+                          'bg-gray-100 text-gray-800': currentStatus === 'No Status'
+                        }">
+                    {{ currentStatus }}
+                  </span>
+                </dd>
+              </div>
+              
+              <div class="bg-white px-4 py-5 grid grid-cols-3 gap-4">
                 <dt class="text-sm font-medium text-gray-500">Symptoms</dt>
                 <dd class="text-sm text-gray-900 col-span-2">{{ record.symptoms }}</dd>
               </div>
@@ -86,9 +102,46 @@
                   <span v-else class="text-gray-500">No anamnesis data available</span>
                 </dd>
               </div>
+              
+              <div class="bg-white px-4 py-5 grid grid-cols-3 gap-4">
+                <dt class="text-sm font-medium text-gray-500">Status History</dt>
+                <dd class="text-sm text-gray-900 col-span-2">
+                  <div v-if="record.statuses && record.statuses.length > 0" class="space-y-2">
+                    <div v-for="status in record.statuses" :key="status.id" class="flex justify-between items-center">
+                      <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full" 
+                            :class="{
+                              'bg-yellow-100 text-yellow-800': status.name === 'Pending',
+                              'bg-blue-100 text-blue-800': status.name === 'Attending',
+                              'bg-green-100 text-green-800': status.name === 'Finalized',
+                              'bg-orange-100 text-orange-800': status.name === 'Needs Follow-up'
+                            }">
+                        {{ status.name }}
+                      </span>
+                      <span class="text-xs text-gray-500">{{ formatDate(status.created_at) }}</span>
+                    </div>
+                  </div>
+                  <span v-else class="text-gray-500">No status history available</span>
+                </dd>
+              </div>
             </dl>
             
             <div class="px-4 py-4 flex justify-end space-x-3">
+              <Link 
+                v-if="canStartConsultation"
+                :href="`/medical-records/${record.id}/start-consultation`"
+                method="post"
+                as="button"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+              >
+                Start Consultation
+              </Link>
+              <Link 
+                v-if="isConsultationInProgress"
+                :href="`/medical-records/${record.id}/consultation`"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+              >
+                Continue Consultation
+              </Link>
               <Link 
                 :href="`/medical-records/${record.id}/edit`" 
                 class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -110,7 +163,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import MainLayout from '@/Layouts/MainLayout.vue'
 
@@ -142,9 +195,26 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
   })
 }
+
+// Get current status
+const currentStatus = computed(() => {
+  return props.record?.statuses?.[0]?.name || 'No Status';
+});
+
+// Check if consultation can be started
+const canStartConsultation = computed(() => {
+  return currentStatus.value === 'Pending';
+});
+
+// Check if consultation is in progress
+const isConsultationInProgress = computed(() => {
+  return currentStatus.value === 'Attending';
+});
 
 // Delete confirmation
 const confirmDelete = () => {

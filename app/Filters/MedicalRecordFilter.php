@@ -56,6 +56,24 @@ class MedicalRecordFilter
     }
 
     /**
+     * Filter by status.
+     */
+    public function status($value): void
+    {
+        $this->builder->whereHas('statuses', function ($query) use ($value) {
+            $query->where('name', $value)
+                  ->where('id', function ($subQuery) {
+                      $subQuery->select('id')
+                               ->from('statuses')
+                               ->whereColumn('model_id', 'medical_records.id')
+                               ->where('model_type', \App\Models\MedicalRecord::class)
+                               ->latest()
+                               ->limit(1);
+                  });
+        });
+    }
+
+    /**
      * Apply sorting to the query.
      */
     public function sort_by($value): void

@@ -29,6 +29,11 @@ Route::get('medical-records/{id}/edit', [MedicalRecordController::class, 'edit']
 Route::put('medical-records/{id}', [MedicalRecordController::class, 'update'])->name('medical-records.update');
 Route::delete('medical-records/{id}', [MedicalRecordController::class, 'destroy'])->name('medical-records.destroy');
 
+// Consultation routes
+Route::post('medical-records/{id}/start-consultation', [MedicalRecordController::class, 'startConsultation'])->name('medical-records.start-consultation');
+Route::get('medical-records/{id}/consultation', [MedicalRecordController::class, 'consultation'])->name('medical-records.consultation');
+Route::put('medical-records/{id}/consultation', [MedicalRecordController::class, 'updateConsultation'])->name('medical-records.update-consultation');
+
 // Patient routes - Auth required in production
 Route::get('patients', [PatientController::class, 'index'])->name('patients.index');
 Route::get('patients/create', [PatientController::class, 'create'])->name('patients.create');

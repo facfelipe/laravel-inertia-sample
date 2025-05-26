@@ -5,10 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\ModelStatus\HasStatuses;
 
 class MedicalRecord extends Model
 {
-    use HasFactory;
+    use HasFactory, HasStatuses;
+
+    const STATUS_PENDING = 'Pending';
+    const STATUS_ATTENDING = 'Attending';
+    const STATUS_FINALIZED = 'Finalized';
+    const STATUS_NEEDS_FOLLOWUP = 'Needs Follow-up';
 
     protected $fillable = [
         'patient_id',
@@ -18,6 +24,34 @@ class MedicalRecord extends Model
         'treatment',
         'notes',
     ];
+
+    /**
+     * Boot the model and set default status.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($medicalRecord) {
+            // Only set status if the record doesn't already have one
+            if (!$medicalRecord->statuses()->exists()) {
+                $medicalRecord->setStatus(self::STATUS_PENDING);
+            }
+        });
+    }
+
+    /**
+     * Get all available statuses.
+     */
+    public static function getStatuses(): array
+    {
+        return [
+            self::STATUS_PENDING,
+            self::STATUS_ATTENDING,
+            self::STATUS_FINALIZED,
+            self::STATUS_NEEDS_FOLLOWUP,
+        ];
+    }
 
     /**
      * Apply filters to the query.

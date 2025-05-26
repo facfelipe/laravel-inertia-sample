@@ -20,6 +20,7 @@ class IndexMedicalRecordRequest extends FormRequest
             'patient_filter' => 'nullable|string|max:255',
             'date_from' => 'nullable|date',
             'date_to' => 'nullable|date|after_or_equal:date_from',
+            'status' => 'nullable|string|in:Pending,Attending,Finalized,Needs Follow-up',
             'sort_by' => 'nullable|string|in:updated_at,patient_name,diagnosis,symptoms',
             'sort_direction' => 'nullable|string|in:asc,desc'
         ];
@@ -34,6 +35,7 @@ class IndexMedicalRecordRequest extends FormRequest
             'patient_filter' => $validated['patient_filter'] ?? '',
             'date_from' => $validated['date_from'] ?? '',
             'date_to' => $validated['date_to'] ?? '',
+            'status' => $validated['status'] ?? '',
             'sort_by' => $validated['sort_by'] ?? 'updated_at',
             'sort_direction' => $validated['sort_direction'] ?? 'desc',
         ];

@@ -17,6 +17,10 @@ const props = defineProps({
   stats: {
     type: Object,
     required: true
+  },
+  availableStatuses: {
+    type: Array,
+    required: true
   }
 });
 
@@ -25,6 +29,7 @@ const localFilters = ref({
   patient_filter: props.filters.patient_filter || '',
   date_from: props.filters.date_from || '',
   date_to: props.filters.date_to || '',
+  status: props.filters.status || '',
   sort_by: props.filters.sort_by || 'updated_at',
   sort_direction: props.filters.sort_direction || 'desc',
   per_page: props.filters.per_page || 10
@@ -38,7 +43,8 @@ const hasRecords = computed(() => props.medicalRecords.data && props.medicalReco
 const hasFilters = computed(() => {
   return localFilters.value.patient_filter || 
          localFilters.value.date_from ||
-         localFilters.value.date_to;
+         localFilters.value.date_to ||
+         localFilters.value.status;
 });
 
 // Format date for display
@@ -100,6 +106,7 @@ const clearFilters = () => {
     patient_filter: '',
     date_from: '',
     date_to: '',
+    status: '',
     sort_by: 'updated_at',
     sort_direction: 'desc',
     per_page: 10
@@ -124,6 +131,7 @@ const goToPage = (page) => {
 watch(() => localFilters.value.patient_filter, applyFilters);
 watch(() => localFilters.value.date_from, applyFilters);
 watch(() => localFilters.value.date_to, applyFilters);
+watch(() => localFilters.value.status, applyFilters);
 watch(() => localFilters.value.per_page, applyFilters);
 </script>
 
@@ -149,7 +157,7 @@ watch(() => localFilters.value.per_page, applyFilters);
         </div>
 
         <!-- Stats Cards -->
-        <div class="grid grid-cols-3 gap-4 sm:gap-6 mb-8">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
           <div class="bg-white p-4 sm:p-6 rounded-lg shadow border border-gray-200">
             <div class="text-center">
               <div class="mx-auto w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
@@ -171,6 +179,18 @@ watch(() => localFilters.value.per_page, applyFilters);
               </div>
               <p class="text-xs sm:text-sm font-medium text-gray-600 mb-1">This Month</p>
               <p class="text-2xl sm:text-4xl font-bold text-gray-900">{{ stats.records_this_month }}</p>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 sm:p-6 rounded-lg shadow border border-gray-200">
+            <div class="text-center">
+              <div class="mx-auto w-10 h-10 sm:w-12 sm:h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <p class="text-xs sm:text-sm font-medium text-gray-600 mb-1">Pending</p>
+              <p class="text-2xl sm:text-4xl font-bold text-gray-900">{{ stats.status_counts?.Pending || 0 }}</p>
             </div>
           </div>
 
@@ -228,6 +248,21 @@ watch(() => localFilters.value.per_page, applyFilters);
                   type="date"
                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 />
+              </div>
+
+              <!-- Status Filter -->
+              <div class="flex-1 min-w-64">
+                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
+                  Status
+                </label>
+                <select
+                  id="status"
+                  v-model="localFilters.status"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">All</option>
+                  <option v-for="status in availableStatuses" :key="status" :value="status">{{ status }}</option>
+                </select>
               </div>
 
               <!-- Clear Filters -->
@@ -317,6 +352,9 @@ watch(() => localFilters.value.per_page, applyFilters);
                       <span class="text-gray-400">{{ getSortIcon('patient_name') }}</span>
                     </div>
                   </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
                   <th 
                     @click="handleSort('diagnosis')"
                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
@@ -351,6 +389,18 @@ watch(() => localFilters.value.per_page, applyFilters);
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
                     <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full" 
+                          :class="{
+                            'bg-yellow-100 text-yellow-800': record.statuses?.[0]?.name === 'Pending',
+                            'bg-blue-100 text-blue-800': record.statuses?.[0]?.name === 'Attending',
+                            'bg-green-100 text-green-800': record.statuses?.[0]?.name === 'Finalized',
+                            'bg-orange-100 text-orange-800': record.statuses?.[0]?.name === 'Needs Follow-up',
+                            'bg-gray-100 text-gray-800': !record.statuses?.[0]?.name
+                          }">
+                      {{ record.statuses?.[0]?.name || 'No Status' }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full" 
                           :class="record.diagnosis ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'">
                       {{ record.diagnosis || 'Not diagnosed' }}
                     </span>
@@ -362,6 +412,22 @@ watch(() => localFilters.value.per_page, applyFilters);
                     <div class="flex justify-end space-x-3">
                       <Link :href="`/medical-records/${record.id}`" class="text-blue-600 hover:text-blue-900 transition-colors">
                         View
+                      </Link>
+                      <Link 
+                        v-if="record.statuses?.[0]?.name === 'Pending' || !record.statuses?.[0]?.name"
+                        :href="`/medical-records/${record.id}/start-consultation`"
+                        method="post"
+                        as="button"
+                        class="text-green-600 hover:text-green-900 transition-colors"
+                      >
+                        Start Consultation
+                      </Link>
+                      <Link 
+                        v-if="record.statuses?.[0]?.name === 'Attending'"
+                        :href="`/medical-records/${record.id}/consultation`"
+                        class="text-purple-600 hover:text-purple-900 transition-colors"
+                      >
+                        Continue Consultation
                       </Link>
                       <Link :href="`/medical-records/${record.id}/edit`" class="text-indigo-600 hover:text-indigo-900 transition-colors">
                         Edit

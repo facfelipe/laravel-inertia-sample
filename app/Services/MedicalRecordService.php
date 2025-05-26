@@ -35,7 +35,9 @@ class MedicalRecordService
 
     public function getById($id)
     {
-        return $this->medicalRecordRepository->find($id);
+        return MedicalRecord::with(['statuses' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }])->find($id);
     }
 
     public function getByPatientId($patientId)
