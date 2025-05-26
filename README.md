@@ -109,6 +109,47 @@ function updateStepInUrl(step) {
 - **Performance Optimization**: Query optimization and caching
 - **Modern Build Pipeline**: Vite 6.2 with HMR and optimized builds
 
+## 🔐 User Role System & Authorization
+
+This application demonstrates **enterprise-level authorization** using Laravel's policy system with a **role-based access control (RBAC)** implementation. The system showcases how to implement granular permissions in a medical environment.
+
+### 👥 User Roles
+
+#### **Staff Role** 👨‍💼
+- **Permissions**: General medical record management
+- **Can do**:
+  - View all medical records
+  - Create new medical records
+  - Edit patient information and symptoms
+  - Update notes and general record data
+  - Delete medical records
+- **Cannot do**:
+  - Start or finish consultations
+  - Update diagnosis and treatment fields
+  - Access doctor-only functionality
+
+#### **Doctor Role** 👩‍⚕️
+- **Permissions**: Full medical authority
+- **Can do**:
+  - Everything staff can do, plus:
+  - Start consultations (Pending → Attending)
+  - Complete consultations (Attending → Finalized/Needs Follow-up)
+  - Update diagnosis and treatment fields
+  - Access all medical functionality
+
+### 🔄 User Role Switching (Demo Feature)
+
+For **demonstration purposes**, the application includes a **user role switcher** in the header that allows you to experience the system from different user perspectives.
+
+The system includes two pre-seeded users:
+- **Staff User** (staff@example.com) - Limited permissions
+- **Dr. Smith** (doctor@example.com) - Full permissions
+
+You can switch between roles to see how the UI adapts:
+- Buttons appear/disappear based on permissions
+- Form fields become disabled for restricted users
+- Different workflows become available
+
 ## 📸 Screenshots
 
 ### Multi-Step Medical Form
@@ -438,7 +479,7 @@ php artisan test --testsuite=Unit
 ### Test Coverage
 The application includes comprehensive testing covering:
 
-#### Feature Tests (30 tests) - **Pest Framework**
+#### Feature Tests (47 tests) - **Pest Framework**
 - **Patient CRUD Operations**: Complete lifecycle testing (7 tests)
   - Create, read, update, delete patients
   - Validation and error handling
@@ -451,6 +492,20 @@ The application includes comprehensive testing covering:
   - Status transitions and business logic validation
   - Form validation for consultation data
   - Error handling for invalid operations
+- **User Role System & Authorization**: Comprehensive permission testing (17 tests)
+  - **User switching functionality**: API endpoints and session management
+  - **Doctor permissions**: Start/finish consultations, update diagnosis/treatment
+  - **Staff restrictions**: Cannot start consultations or update medical decisions
+  - **UI permission integration**: Frontend receives and respects permission data
+  - **Policy enforcement**: Controller-level authorization checks
+  - **Role-based form validation**: Different validation rules per role
+  - **Current user service**: Session management and role switching
+  - **Permission data flow**: Backend to frontend permission passing
+- **Consultation Workflow**: Enhanced with authorization (7 tests)
+  - Role-based consultation access control
+  - Doctor-only consultation completion
+  - Staff consultation restrictions with proper error handling
+  - Authorization integration with existing workflow
 - **Anamnesis Operations**: Vital signs management (4 tests)
   - Create and update patient vital signs
   - Validation for numeric fields
@@ -471,23 +526,34 @@ The application includes comprehensive testing covering:
   - Duplicate status prevention
   - Status history tracking and integrity
 
-**Total: 38 tests, 129 assertions - All passing ✅**
+**Total: 55 tests, 180+ assertions - All passing ✅**
 
-### Medical Record Status Testing
-The status system includes comprehensive test coverage for:
+### Authorization System Testing
+The role-based authorization system includes extensive test coverage:
 
-#### Status Workflow Tests
-- **Automatic Assignment**: New medical records automatically receive "Pending" status
-- **Consultation Flow**: Starting consultation changes status to "Attending"
-- **Completion Options**: Consultations can be completed as "Finalized" or "Needs Follow-up"
-- **Status History**: Complete audit trail of all status changes
-- **Data Integrity**: Proper validation and error handling throughout the workflow
+#### **Policy Testing**
+- **Permission enforcement**: All policy methods tested for both roles
+- **Consultation permissions**: Doctor-only start/finish consultation access
+- **Medical decision permissions**: Doctor-only diagnosis/treatment updates
+- **General permissions**: Both roles can view, create, update, delete records
 
-#### Business Logic Validation
-- **Status Transitions**: Only valid status changes are allowed
-- **Form Validation**: Required fields enforced during consultation
-- **Error Handling**: Graceful handling of invalid records or operations
-- **Data Persistence**: Status changes properly saved and retrievable
+#### **User Role Management Testing**
+- **Role switching API**: User switching endpoints with validation
+- **Session management**: Current user persistence across requests
+- **Permission data integration**: Frontend receives correct permission flags
+- **Error handling**: Graceful handling of unauthorized actions
+
+#### **Frontend Authorization Testing**
+- **UI adaptation**: Components show/hide based on permissions
+- **Form restrictions**: Fields disabled for unauthorized users
+- **Permission props**: Correct permission data passed to Vue components
+- **Role indicators**: User role display and switching functionality
+
+#### **Integration Testing**
+- **End-to-end workflows**: Complete consultation workflow with authorization
+- **Cross-role testing**: Same actions tested for different user roles
+- **Error scenarios**: Unauthorized access attempts properly handled
+- **State management**: Role switching maintains application state
 
 ### Testing Features
 - **Pest 3.8**: Modern PHP testing framework
@@ -495,6 +561,7 @@ The status system includes comprehensive test coverage for:
 - **Feature Testing**: Full HTTP request/response testing with Inertia.js
 - **Unit Testing**: Isolated component and business logic testing
 - **Database Testing**: RefreshDatabase trait for clean test state
+- **Authorization Testing**: Complete role-based permission validation
 - **Status System Testing**: Complete workflow validation from creation to completion
 
 ## 🔒 Security Considerations
@@ -535,6 +602,10 @@ Since this is an Inertia.js application, we use server-side routing:
 - `POST /medical-records/{id}/start-consultation` - Start consultation (Pending → Attending)
 - `GET /medical-records/{id}/consultation` - Consultation interface with patient data
 - `PUT /medical-records/{id}/consultation` - Complete consultation (Attending → Finalized/Needs Follow-up)
+
+### User Role System (Demo Feature)
+- `GET /current-user` - Get current user and available users for role switching
+- `POST /switch-user` - Switch to a different user role (demo purposes only)
 
 ### Patients
 - `GET /patients` - Index with search functionality
