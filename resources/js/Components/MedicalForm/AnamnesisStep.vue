@@ -39,7 +39,7 @@
         @click="fillStandardValues" 
         @keydown.f.prevent="fillStandardValues"
         type="button"
-        class="inline-flex items-center px-4 py-2 border border-blue-300 shadow-sm text-sm font-medium rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+        class="inline-flex items-center px-4 py-2 border border-blue-300 shadow-sm text-sm font-medium rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100 focus:outline-none transition-colors duration-200"
         aria-describedby="fill-standard-help"
         ref="fillStandardButton"
       >
@@ -74,8 +74,8 @@
               v-model="anamnesisData.blood_pressure"
               type="text"
               placeholder="e.g., 120/80"
-              class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
-              :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': validationErrors.blood_pressure }"
+              class="block w-full border-gray-300 rounded-md shadow-sm focus:outline-none"
+              :class="{ 'border-red-500 focus:border-red-500 focus:shadow-red-100': validationErrors.blood_pressure }"
               :aria-invalid="!!validationErrors.blood_pressure"
               :aria-describedby="validationErrors.blood_pressure ? 'blood-pressure-error' : 'blood-pressure-help'"
               @keydown.enter.prevent="focusNextField"
@@ -108,8 +108,8 @@
               min="30"
               max="250"
               placeholder="e.g., 72"
-              class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
-              :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': validationErrors.heart_rate }"
+              class="block w-full border-gray-300 rounded-md shadow-sm focus:outline-none"
+              :class="{ 'border-red-500 focus:border-red-500 focus:shadow-red-100': validationErrors.heart_rate }"
               :aria-invalid="!!validationErrors.heart_rate"
               :aria-describedby="validationErrors.heart_rate ? 'heart-rate-error' : 'heart-rate-help'"
               @keydown.enter.prevent="focusNextField"
@@ -142,8 +142,8 @@
               min="30"
               max="45"
               placeholder="e.g., 36.5"
-              class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
-              :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': validationErrors.temperature }"
+              class="block w-full border-gray-300 rounded-md shadow-sm focus:outline-none"
+              :class="{ 'border-red-500 focus:border-red-500 focus:shadow-red-100': validationErrors.temperature }"
               :aria-invalid="!!validationErrors.temperature"
               :aria-describedby="validationErrors.temperature ? 'temperature-error' : 'temperature-help'"
               @keydown.enter.prevent="focusNextField"
@@ -176,8 +176,8 @@
               min="1"
               max="500"
               placeholder="e.g., 70"
-              class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
-              :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': validationErrors.weight }"
+              class="block w-full border-gray-300 rounded-md shadow-sm focus:outline-none"
+              :class="{ 'border-red-500 focus:border-red-500 focus:shadow-red-100': validationErrors.weight }"
               :aria-invalid="!!validationErrors.weight"
               :aria-describedby="validationErrors.weight ? 'weight-error' : 'weight-help'"
               @keydown.enter.prevent="focusNextField"
@@ -218,8 +218,8 @@
               placeholder="170"
               min="50"
               max="250"
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': validationErrors.height }"
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none"
+              :class="{ 'border-red-500 focus:border-red-500 focus:shadow-red-100': validationErrors.height }"
               :aria-invalid="!!validationErrors.height"
               :aria-describedby="validationErrors.height ? 'height-error' : 'height-help'"
               @keydown.enter.prevent="focusNextField"
@@ -258,8 +258,8 @@
               v-model="anamnesisData.allergies"
               rows="3"
               placeholder="List any known allergies..."
-              class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
-              :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': validationErrors.allergies }"
+              class="block w-full border-gray-300 rounded-md shadow-sm focus:outline-none"
+              :class="{ 'border-red-500 focus:border-red-500 focus:shadow-red-100': validationErrors.allergies }"
               :aria-invalid="!!validationErrors.allergies"
               :aria-describedby="validationErrors.allergies ? 'allergies-error' : 'allergies-help'"
               @keydown.ctrl.enter.prevent="nextStep"
@@ -289,8 +289,8 @@
               v-model="anamnesisData.medications"
               rows="3"
               placeholder="List current medications and dosages..."
-              class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
-              :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': validationErrors.medications }"
+              class="block w-full border-gray-300 rounded-md shadow-sm focus:outline-none"
+              :class="{ 'border-red-500 focus:border-red-500 focus:shadow-red-100': validationErrors.medications }"
               :aria-invalid="!!validationErrors.medications"
               :aria-describedby="validationErrors.medications ? 'medications-error' : 'medications-help'"
               @keydown.ctrl.enter.prevent="nextStep"
@@ -317,7 +317,7 @@
       <button 
         @click="prevStep" 
         @keydown.alt.p.prevent="prevStep"
-        class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
         aria-describedby="prev-button-help"
       >
         <svg class="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -333,7 +333,7 @@
       <button 
         @click="nextStep" 
         @keydown.alt.n.prevent="nextStep"
-        class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
         :disabled="isSubmitting"
         aria-describedby="next-button-help"
         ref="nextButtonRef"
@@ -587,30 +587,21 @@ async function nextStep() {
 </script>
 
 <style scoped>
-.form-field {
-  @apply relative;
-}
-
-/* Focus indicators */
-button:focus,
-input:focus,
-select:focus,
-textarea:focus {
-  @apply ring-2 ring-blue-500 ring-offset-2;
-}
+/* Removed custom focus indicators to avoid Tailwind v4 compatibility issues */
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .border-gray-300 {
-    @apply border-gray-900;
+    border-color: #111827;
   }
   
   .text-gray-500 {
-    @apply text-gray-900;
+    color: #111827;
   }
   
   .bg-gray-50 {
-    @apply bg-white border border-gray-900;
+    background-color: white;
+    border: 1px solid #111827;
   }
 }
 
@@ -636,10 +627,5 @@ textarea:focus {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
-}
-
-/* Focus within fieldsets */
-fieldset:focus-within {
-  @apply ring-2 ring-blue-500 ring-offset-2 rounded-md;
 }
 </style> 

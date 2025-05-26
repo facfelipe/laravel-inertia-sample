@@ -38,11 +38,11 @@ const store = useMedicalFormStore()
 
 // Clear form data when this page loads to ensure a fresh start
 onMounted(() => {
+  // Always clear previous form data when creating a new record
+  store.resetForm()
+  
   // Initialize the step from the URL/props first
   store.initializeStep(props.initialStep)
-  
-  // Load any saved form data (excluding step)
-  store.loadState()
   
   // Then set patients data from props
   if (props.patients && Array.isArray(props.patients) && props.patients.length > 0) {

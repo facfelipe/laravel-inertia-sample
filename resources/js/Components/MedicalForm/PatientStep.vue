@@ -36,7 +36,7 @@
             aria-describedby="existing-patient-desc"
             @click="setExistingPatient(true)" 
             @keydown.alt.e.prevent="setExistingPatient(true)"
-            class="px-3 py-2 text-sm font-medium rounded-l-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            class="px-3 py-2 text-sm font-medium rounded-l-lg border border-gray-200 focus:outline-none"
             :class="isExistingPatient ? 'bg-blue-600 text-white' : 'bg-white text-gray-900 hover:bg-gray-100'"
             ref="existingPatientButton"
           >
@@ -52,7 +52,7 @@
             aria-describedby="new-patient-desc"
             @click="setExistingPatient(false)" 
             @keydown.alt.n.prevent="setExistingPatient(false)"
-            class="px-3 py-2 text-sm font-medium rounded-r-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            class="px-3 py-2 text-sm font-medium rounded-r-lg border border-gray-200 focus:outline-none"
             :class="!isExistingPatient ? 'bg-blue-600 text-white' : 'bg-white text-gray-900 hover:bg-gray-100'"
             ref="newPatientButton"
           >
@@ -73,8 +73,8 @@
         <select 
           id="patients"
           v-model="selectedPatientId"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': validationErrors.patientId }"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-none"
+          :class="{ 'border-red-500 focus:border-red-500 focus:shadow-red-500': validationErrors.patientId }"
           :aria-invalid="!!validationErrors.patientId"
           :aria-describedby="validationErrors.patientId ? 'patient-error' : 'patient-help'"
           ref="patientSelectRef"
@@ -109,7 +109,7 @@
             @click="fillSamplePatient" 
             @keydown.alt.s.prevent="fillSamplePatient"
             type="button"
-            class="inline-flex items-center px-3 py-2 border border-purple-300 shadow-sm text-xs font-medium rounded-md text-purple-700 bg-purple-50 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200"
+            class="inline-flex items-center px-3 py-2 border border-purple-300 shadow-sm text-xs font-medium rounded-md text-purple-700 bg-purple-50 hover:bg-purple-100 focus:outline-none"
             aria-describedby="sample-help"
             ref="sampleButton"
           >
@@ -133,8 +133,8 @@
             type="text" 
             id="name" 
             v-model="patientData.name" 
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': validationErrors.name }"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-none"
+            :class="{ 'border-red-500 focus:border-red-500 focus:shadow-red-500': validationErrors.name }"
             maxlength="255"
             required
             :aria-invalid="!!validationErrors.name"
@@ -166,8 +166,8 @@
             type="email" 
             id="email" 
             v-model="patientData.email" 
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': validationErrors.email }"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-none"
+            :class="{ 'border-red-500 focus:border-red-500 focus:shadow-red-500': validationErrors.email }"
             maxlength="255"
             required
             :aria-invalid="!!validationErrors.email"
@@ -198,8 +198,8 @@
             type="tel" 
             id="phone" 
             v-model="patientData.phone" 
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': validationErrors.phone }"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-none"
+            :class="{ 'border-red-500 focus:border-red-500 focus:shadow-red-500': validationErrors.phone }"
             maxlength="20"
             placeholder="Optional"
             :aria-invalid="!!validationErrors.phone"
@@ -230,8 +230,8 @@
             type="date" 
             id="birth_date" 
             v-model="patientData.birth_date" 
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': validationErrors.birth_date }"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-none"
+            :class="{ 'border-red-500 focus:border-red-500 focus:shadow-red-500': validationErrors.birth_date }"
             required
             :aria-invalid="!!validationErrors.birth_date"
             :aria-describedby="validationErrors.birth_date ? 'birth-date-error' : 'birth-date-help'"
@@ -261,8 +261,8 @@
             id="address" 
             v-model="patientData.address" 
             rows="3" 
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': validationErrors.address }"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-none"
+            :class="{ 'border-red-500 focus:border-red-500 focus:shadow-red-500': validationErrors.address }"
             maxlength="255"
             placeholder="Optional"
             :aria-invalid="!!validationErrors.address"
@@ -290,7 +290,7 @@
       <button 
         @click="nextStep" 
         @keydown.alt.enter.prevent="nextStep"
-        class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-4 py-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
         :disabled="isSubmitting"
         :aria-describedby="'next-button-help'"
         ref="nextButtonRef"
@@ -629,25 +629,19 @@ async function nextStep() {
 
 <style scoped>
 .form-field {
-  @apply relative;
+  position: relative;
 }
 
-/* Focus indicators */
-button:focus,
-input:focus,
-select:focus,
-textarea:focus {
-  @apply ring-2 ring-blue-500 ring-offset-2;
-}
+/* Removed custom focus indicators to avoid Tailwind v4 compatibility issues */
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .border-gray-300 {
-    @apply border-gray-900;
+    border-color: #111827;
   }
   
   .text-gray-500 {
-    @apply text-gray-900;
+    color: #111827;
   }
 }
 

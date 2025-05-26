@@ -34,7 +34,7 @@
         @click="fillSampleData" 
         @keydown.s.prevent="fillSampleData"
         type="button"
-        class="inline-flex items-center px-4 py-2 border border-green-300 shadow-sm text-sm font-medium rounded-md text-green-700 bg-green-50 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
+        class="inline-flex items-center px-4 py-2 border border-green-300 shadow-sm text-sm font-medium rounded-md text-green-700 bg-green-50 hover:bg-green-100 focus:outline-none transition-colors duration-200"
         aria-describedby="sample-data-help"
         ref="sampleDataButton"
       >
@@ -72,8 +72,8 @@
             id="symptoms" 
             v-model="medicalRecordData.symptoms" 
             rows="3" 
-            class="focus:ring-indigo-500 focus:border-indigo-500 block w-full border-gray-300 rounded-md shadow-sm transition-colors duration-200 focus:outline-none"
-            :class="{ 'border-red-300 ring-red-300 focus:ring-red-500 focus:border-red-500': validationErrors.symptoms }"
+            class="block w-full border-gray-300 rounded-md shadow-sm transition-colors duration-200 focus:outline-none"
+            :class="{ 'border-red-300 focus:border-red-500 focus:shadow-red-100': validationErrors.symptoms }"
             placeholder="Describe the patient's symptoms in detail"
             :aria-invalid="!!validationErrors.symptoms"
             :aria-describedby="validationErrors.symptoms ? 'symptoms-error' : 'symptoms-help'"
@@ -116,8 +116,8 @@
             id="notes" 
             v-model="medicalRecordData.notes" 
             rows="3" 
-            class="focus:ring-indigo-500 focus:border-indigo-500 block w-full border-gray-300 rounded-md shadow-sm transition-colors duration-200 focus:outline-none"
-            :class="{ 'border-red-300 ring-red-300 focus:ring-red-500 focus:border-red-500': validationErrors.notes }"
+            class="block w-full border-gray-300 rounded-md shadow-sm transition-colors duration-200 focus:outline-none"
+            :class="{ 'border-red-300 focus:border-red-500 focus:shadow-red-100': validationErrors.notes }"
             placeholder="Additional notes, observations, or follow-up instructions"
             :aria-invalid="!!validationErrors.notes"
             :aria-describedby="validationErrors.notes ? 'notes-error' : 'notes-help'"
@@ -144,7 +144,7 @@
       <button 
         @click="prevStep" 
         @keydown.alt.p.prevent="prevStep"
-        class="inline-flex items-center px-6 py-3 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+        class="inline-flex items-center px-6 py-3 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition-colors duration-200"
         aria-describedby="prev-button-help"
       >
         <svg class="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -160,7 +160,7 @@
       <button 
         @click="submitForm" 
         @keydown.alt.s.prevent="submitForm"
-        class="inline-flex justify-center items-center px-6 py-3 border border-transparent rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200 shadow-md min-w-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
+        class="inline-flex justify-center items-center px-6 py-3 border border-transparent rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none transition-colors duration-200 shadow min-w-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
         :disabled="isSubmitting"
         aria-describedby="submit-button-help"
         ref="submitButtonRef"
@@ -219,7 +219,7 @@
             <button 
               @click="startNewRecord" 
               @keydown.enter.prevent="startNewRecord"
-              class="inline-flex justify-center items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+              class="inline-flex justify-center items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition-colors duration-200"
               ref="newRecordButtonRef"
               aria-describedby="new-record-help"
             >
@@ -235,7 +235,7 @@
             <button 
               @click="viewAllRecords" 
               @keydown.enter.prevent="viewAllRecords"
-              class="inline-flex justify-center items-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+              class="inline-flex justify-center items-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition-colors duration-200"
               aria-describedby="view-records-help"
             >
               <svg class="h-4 w-4 mr-1.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -526,30 +526,26 @@ function viewAllRecords() {
 </script>
 
 <style scoped>
-/* Focus indicators */
-button:focus,
-input:focus,
-select:focus,
-textarea:focus {
-  @apply ring-2 ring-indigo-500 ring-offset-2;
-}
+/* Removed custom focus indicators to avoid Tailwind v4 compatibility issues */
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .border-gray-300 {
-    @apply border-gray-900;
+    border-color: #111827;
   }
   
   .text-gray-500 {
-    @apply text-gray-900;
+    color: #111827;
   }
   
   .bg-gray-50 {
-    @apply bg-white border border-gray-900;
+    background-color: white;
+    border: 1px solid #111827;
   }
   
   .bg-gradient-to-r {
-    @apply bg-white border-2 border-indigo-900;
+    background-color: white;
+    border: 2px solid #312e81;
   }
 }
 
@@ -581,11 +577,6 @@ textarea:focus {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
-}
-
-/* Focus within fieldsets */
-fieldset:focus-within {
-  @apply ring-2 ring-indigo-500 ring-offset-2 rounded-md;
 }
 
 /* Modal animations */
