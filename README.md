@@ -112,24 +112,17 @@ function updateStepInUrl(step: number) {
 
 ## 📸 Screenshots
 
-<!-- TODO: Add actual screenshot files to docs/images/ directory -->
-
 ### Multi-Step Medical Form
-<!-- ![Medical Form - Anamnesis Step](docs/images/medical-form-anamnesis.png) -->
-**Anamnesis Step**: Features vital signs collection including blood pressure, heart rate, temperature, and weight measurements with real-time validation.
+![Medical Form - Anamnesis Step](./docs/images/medical-form-anamnesis.png)
+*Step 2: Anamnesis form with vital signs collection including blood pressure, heart rate, temperature, and weight measurements with real-time validation*
 
 ### Medical Records Management  
-<!-- ![Medical Records Listing](docs/images/medical-records-listing.png) -->
-**Medical Records Dashboard**: Complete listing with status tracking, search functionality, and consultation workflow actions.
+![Medical Records Listing](./docs/images/medical-records-listing.png)
+*Medical records dashboard with status tracking, search functionality, and consultation workflow actions*
 
 ### Dashboard Overview
-<!-- ![Dashboard](docs/images/dashboard.png) -->
-**Application Dashboard**: Statistics overview, recent medical records, and quick access to key features.
-
-*Note: To display screenshots, save the following image files in the `docs/images/` directory:*
-- `medical-form-anamnesis.png` - Screenshot of the anamnesis form step
-- `medical-records-listing.png` - Screenshot of the medical records listing page  
-- `dashboard.png` - Screenshot of the main dashboard
+![Dashboard](./docs/images/dashboard.png)
+*Application dashboard showing statistics, recent medical records, and quick access to key features*
 
 ## 🛠️ Installation
 
