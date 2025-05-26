@@ -5,6 +5,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\Web\MedicalRecordController;
 use App\Http\Controllers\Web\PatientController;
 use App\Http\Controllers\Web\AnamnesisController;
+use App\Http\Controllers\UserSwitchController;
 use App\Services\MedicalRecordService;
 
 // NOTE: Authentication is skipped for demo purposes
@@ -19,6 +20,10 @@ Route::get('/', function () {
         'title' => 'Dashboard'
     ]);
 })->name('home');
+
+// User switching routes
+Route::post('switch-user', [UserSwitchController::class, 'switch'])->name('switch-user');
+Route::get('current-user', [UserSwitchController::class, 'current'])->name('current-user');
 
 // Medical records routes - Auth required in production
 Route::get('medical-form', [MedicalRecordController::class, 'create'])->name('medical-form');
