@@ -22,6 +22,10 @@ const props = defineProps({
   availableStatuses: {
     type: Array,
     required: true
+  },
+  permissions: {
+    type: Object,
+    default: () => ({})
   }
 });
 
@@ -456,7 +460,7 @@ watch(() => localFilters.value.per_page, applyFilters);
                         View
                       </Link>
                       <Link 
-                        v-if="record.statuses?.[0]?.name === 'Pending' || !record.statuses?.[0]?.name"
+                        v-if="(record.statuses?.[0]?.name === 'Pending' || !record.statuses?.[0]?.name) && permissions.canStartConsultation"
                         :href="`/medical-records/${record.id}/start-consultation`"
                         method="post"
                         as="button"

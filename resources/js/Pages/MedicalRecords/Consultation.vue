@@ -23,6 +23,10 @@ const props = defineProps({
   availableStatuses: {
     type: Array,
     required: true
+  },
+  permissions: {
+    type: Object,
+    default: () => ({})
   }
 });
 
@@ -175,6 +179,21 @@ const submitConsultation = () => {
             <div class="bg-white rounded-lg shadow p-6">
               <h3 class="text-lg font-medium text-gray-900 mb-4">Consultation Details</h3>
               
+              <div v-if="!permissions.canFinishConsultation" class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+                <div class="flex">
+                  <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                  <div class="ml-3">
+                    <p class="text-sm text-yellow-700">
+                      Only doctors can complete consultations. You can view the consultation details but cannot make changes.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
               <form @submit.prevent="submitConsultation" class="space-y-6">
                 <!-- Diagnosis -->
                 <div>
@@ -185,7 +204,8 @@ const submitConsultation = () => {
                     id="diagnosis"
                     v-model="form.diagnosis"
                     rows="4"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    :disabled="!permissions.canFinishConsultation"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                     :class="{ 'border-red-500': form.errors.diagnosis }"
                     placeholder="Enter diagnosis..."
                     required
@@ -204,7 +224,8 @@ const submitConsultation = () => {
                     id="treatment"
                     v-model="form.treatment"
                     rows="4"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    :disabled="!permissions.canFinishConsultation"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                     :class="{ 'border-red-500': form.errors.treatment }"
                     placeholder="Enter treatment plan..."
                     required
@@ -223,7 +244,8 @@ const submitConsultation = () => {
                     id="notes"
                     v-model="form.notes"
                     rows="3"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    :disabled="!permissions.canFinishConsultation"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                     placeholder="Enter any additional notes..."
                   ></textarea>
                 </div>
@@ -236,7 +258,8 @@ const submitConsultation = () => {
                   <select
                     id="status"
                     v-model="form.status"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    :disabled="!permissions.canFinishConsultation"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                     :class="{ 'border-red-500': form.errors.status }"
                     required
                   >
@@ -259,8 +282,8 @@ const submitConsultation = () => {
                   </Link>
                   <button
                     type="submit"
-                    :disabled="form.processing"
-                    class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                    :disabled="form.processing || !permissions.canFinishConsultation"
+                    class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <span v-if="form.processing">Saving...</span>
                     <span v-else>Complete Consultation</span>

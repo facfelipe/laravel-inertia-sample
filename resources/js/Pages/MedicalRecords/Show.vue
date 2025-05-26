@@ -184,6 +184,10 @@ const props = defineProps({
   anamnesis: {
     type: Object,
     default: null
+  },
+  permissions: {
+    type: Object,
+    default: () => ({})
   }
 });
 
@@ -208,7 +212,7 @@ const currentStatus = computed(() => {
 
 // Check if consultation can be started
 const canStartConsultation = computed(() => {
-  return currentStatus.value === 'Pending';
+  return currentStatus.value === 'Pending' && props.permissions.canStartConsultation;
 });
 
 // Check if consultation is in progress

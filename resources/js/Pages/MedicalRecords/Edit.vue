@@ -65,28 +65,38 @@
             
             <!-- Diagnosis -->
             <div class="col-span-2">
-              <label for="diagnosis" class="block text-sm font-medium text-gray-700">Diagnosis</label>
+              <label for="diagnosis" class="block text-sm font-medium text-gray-700">
+                Diagnosis
+                <span v-if="!permissions.canUpdateDiagnosisAndTreatment" class="text-xs text-orange-600 ml-2">(Doctor Only)</span>
+              </label>
               <textarea 
                 v-model="form.diagnosis" 
                 id="diagnosis"
                 rows="3" 
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                :disabled="!permissions.canUpdateDiagnosisAndTreatment"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 :class="{ 'border-red-300': form.errors.diagnosis }"
               ></textarea>
               <p v-if="form.errors.diagnosis" class="mt-1 text-sm text-red-600">{{ form.errors.diagnosis }}</p>
+              <p v-if="!permissions.canUpdateDiagnosisAndTreatment" class="mt-1 text-xs text-gray-500">Only doctors can update diagnosis information</p>
             </div>
             
             <!-- Treatment -->
             <div class="col-span-2">
-              <label for="treatment" class="block text-sm font-medium text-gray-700">Treatment</label>
+              <label for="treatment" class="block text-sm font-medium text-gray-700">
+                Treatment
+                <span v-if="!permissions.canUpdateDiagnosisAndTreatment" class="text-xs text-orange-600 ml-2">(Doctor Only)</span>
+              </label>
               <textarea 
                 v-model="form.treatment" 
                 id="treatment"
                 rows="3" 
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                :disabled="!permissions.canUpdateDiagnosisAndTreatment"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 :class="{ 'border-red-300': form.errors.treatment }"
               ></textarea>
               <p v-if="form.errors.treatment" class="mt-1 text-sm text-red-600">{{ form.errors.treatment }}</p>
+              <p v-if="!permissions.canUpdateDiagnosisAndTreatment" class="mt-1 text-xs text-gray-500">Only doctors can update treatment information</p>
             </div>
             
             <!-- Notes -->
@@ -177,6 +187,10 @@ const props = defineProps({
   anamnesis: {
     type: Object,
     default: null
+  },
+  permissions: {
+    type: Object,
+    default: () => ({})
   }
 });
 
