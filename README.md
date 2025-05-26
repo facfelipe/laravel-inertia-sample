@@ -215,6 +215,8 @@ php artisan queue:work
 - ✅ Built-in monitoring with Laravel Pulse
 - ✅ Free to use
 
+> **🚨 IMPORTANT**: You must run `php artisan reverb:start` in a separate terminal for real-time features to work. The WebSocket server needs to be running continuously during development.
+
 ### Option 2: Pusher.com Service 📡
 
 **Pusher** is a managed WebSocket service (requires account signup).
@@ -262,14 +264,6 @@ php artisan test:websocket --record-id=1
 - 🟢 **Connection Status**: Visual indicator shows WebSocket connection
 - 🔄 **Auto-reconnection**: Handles connection drops gracefully
 
-### Troubleshooting
-
-**No real-time updates?**
-- Check browser console for WebSocket connection logs
-- Ensure queue worker is running: `php artisan queue:work`
-- For Reverb: Verify server is running: `php artisan reverb:start`
-- Test broadcasting: `php artisan test:websocket`
-
 **See detailed setup guide:** `docs/ENVIRONMENT_SETUP.md`
 
 ## 🚀 Development Commands
@@ -282,11 +276,15 @@ Laravel 12 includes modern development scripts for enhanced productivity:
 composer run dev
 # This runs: PHP server + Queue worker + Logs (Pail) + Vite HMR
 
+# For real-time WebSocket features, also run in a separate terminal:
+php artisan reverb:start
+
 # Individual commands
 php artisan serve          # Laravel development server
 npm run dev               # Vite HMR for frontend
 php artisan queue:listen  # Background job processing  
 php artisan pail          # Real-time log monitoring
+php artisan reverb:start  # WebSocket server for real-time features
 ```
 
 ### Production Deployment
