@@ -3,13 +3,24 @@
 use App\Models\MedicalRecord;
 use App\Models\Patient;
 use App\Models\User;
+use App\Services\CurrentUserService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    // Create a user for authentication (though not currently used in routes)
-    $this->user = User::factory()->create();
+    // Create users with different roles
+    $this->doctorUser = User::factory()->create([
+        'role' => User::ROLE_DOCTOR,
+        'name' => 'Dr. Test',
+        'email' => 'doctor@test.com'
+    ]);
+    
+    $this->staffUser = User::factory()->create([
+        'role' => User::ROLE_STAFF,
+        'name' => 'Staff Test',
+        'email' => 'staff@test.com'
+    ]);
     
     // Create a patient for testing
     $this->patient = Patient::factory()->create();
@@ -22,6 +33,9 @@ beforeEach(function () {
         'treatment' => 'Test treatment',
         'notes' => 'Test notes',
     ]);
+    
+    // Set default user to staff for most tests
+    app(CurrentUserService::class)->setCurrentUser($this->staffUser);
 });
 
 test('can get medical records index page', function () {
@@ -87,7 +101,35 @@ test('can store a new medical record', function () {
     ]);
 });
 
-test('can update a medical record', function () {
+test('can update a medical record as staff without diagnosis and treatment', function () {
+    // Arrange - staff user can update but not diagnosis/treatment
+    $data = [
+        'patient_id' => $this->patient->id,
+        'symptoms' => 'Updated symptoms',
+        'notes' => 'Updated notes',
+    ];
+    
+    // Act
+    $response = $this->put("/medical-records/{$this->medicalRecord->id}", $data);
+    
+    // Assert - web routes typically redirect after PUT
+    $response->assertStatus(302);
+    
+    // Verify the record was updated (only allowed fields)
+    $this->assertDatabaseHas('medical_records', [
+        'id' => $this->medicalRecord->id,
+        'symptoms' => 'Updated symptoms',
+        'notes' => 'Updated notes',
+        // diagnosis and treatment should remain unchanged
+        'diagnosis' => 'Test diagnosis',
+        'treatment' => 'Test treatment',
+    ]);
+});
+
+test('doctor can update medical record including diagnosis and treatment', function () {
+    // Set current user to doctor
+    app(CurrentUserService::class)->setCurrentUser($this->doctorUser);
+    
     // Arrange
     $data = [
         'patient_id' => $this->patient->id,
@@ -110,6 +152,31 @@ test('can update a medical record', function () {
         'diagnosis' => 'Updated diagnosis',
         'treatment' => 'Updated treatment',
         'notes' => 'Updated notes',
+    ]);
+});
+
+test('staff cannot update diagnosis and treatment fields', function () {
+    // Arrange - staff user tries to update diagnosis/treatment
+    $data = [
+        'patient_id' => $this->patient->id,
+        'symptoms' => 'Updated symptoms',
+        'diagnosis' => 'Updated diagnosis', // Staff cannot update this
+        'treatment' => 'Updated treatment', // Staff cannot update this
+        'notes' => 'Updated notes',
+    ];
+    
+    // Act
+    $response = $this->put("/medical-records/{$this->medicalRecord->id}", $data);
+    
+    // Assert - should redirect back with error
+    $response->assertStatus(302);
+    $response->assertSessionHasErrors(['error']);
+    
+    // Verify diagnosis and treatment were NOT updated
+    $this->assertDatabaseHas('medical_records', [
+        'id' => $this->medicalRecord->id,
+        'diagnosis' => 'Test diagnosis', // Should remain unchanged
+        'treatment' => 'Test treatment', // Should remain unchanged
     ]);
 });
 
