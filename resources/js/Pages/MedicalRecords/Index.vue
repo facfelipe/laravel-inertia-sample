@@ -355,24 +355,6 @@ watch(() => localFilters.value.per_page, applyFilters);
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
-                  <th 
-                    @click="handleSort('diagnosis')"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                  >
-                    <div class="flex items-center space-x-1">
-                      <span>Diagnosis</span>
-                      <span class="text-gray-400">{{ getSortIcon('diagnosis') }}</span>
-                    </div>
-                  </th>
-                  <th 
-                    @click="handleSort('symptoms')"
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                  >
-                    <div class="flex items-center space-x-1">
-                      <span>Symptoms</span>
-                      <span class="text-gray-400">{{ getSortIcon('symptoms') }}</span>
-                    </div>
-                  </th>
                   <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
@@ -398,15 +380,6 @@ watch(() => localFilters.value.per_page, applyFilters);
                           }">
                       {{ record.statuses?.[0]?.name || 'No Status' }}
                     </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full" 
-                          :class="record.diagnosis ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'">
-                      {{ record.diagnosis || 'Not diagnosed' }}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
-                    {{ record.symptoms || 'No symptoms recorded' }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div class="flex justify-end space-x-3">
