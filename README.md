@@ -4,6 +4,37 @@ A **sample medical records management application** built with **Laravel 12**, *
 
 > **⚠️ Important**: This is a **demo application** designed for educational and portfolio showcase purposes only. It is not intended for use in real medical environments or with actual patient data.
 
+## 🚀 Quick Start
+
+Want to get up and running immediately? Follow these steps:
+
+```bash
+# 1. Clone and install
+git clone <repository-url>
+cd laravel-inertia-sample
+composer install && npm install
+
+# 2. Setup environment
+cp .env.example .env
+php artisan key:generate
+
+# 3. Configure database in .env (PostgreSQL required)
+# DB_CONNECTION=pgsql, DB_DATABASE=medical_records, etc.
+
+# 4. Run migrations and seed data
+php artisan migrate && php artisan db:seed
+
+# 5. Start development
+composer run dev
+# In another terminal: php artisan reverb:start (for real-time features)
+```
+
+**🎯 Default Users for Testing:**
+- **Staff**: staff@example.com (limited permissions)
+- **Doctor**: doctor@example.com (full permissions)
+
+Use the role switcher in the header to experience different user perspectives!
+
 ## 🏗️ Architecture Overview
 
 ### Backend Architecture
@@ -150,20 +181,6 @@ You can switch between roles to see how the UI adapts:
 - Form fields become disabled for restricted users
 - Different workflows become available
 
-## 📸 Screenshots
-
-### Multi-Step Medical Form
-![Medical Form - Anamnesis Step](./docs/images/medical-form-anamnesis.png)
-*Step 2: Anamnesis form with vital signs collection including blood pressure, heart rate, temperature, and weight measurements with real-time validation*
-
-### Medical Records Management  
-![Medical Records Listing](./docs/images/medical-records-listing.png)
-*Medical records dashboard with status tracking, search functionality, and consultation workflow actions*
-
-### Dashboard Overview
-![Dashboard](./docs/images/dashboard.png)
-*Application dashboard showing statistics, recent medical records, and quick access to key features*
-
 ## 🛠️ Installation
 
 ### Prerequisites
@@ -217,7 +234,65 @@ npm run build
 php artisan serve
 ```
 
-## 🌐 Real-time WebSocket Setup
+## 📸 Screenshots
+
+### Multi-Step Medical Form
+![Medical Form - Anamnesis Step](./docs/images/medical-form-anamnesis.png)
+*Step 2: Anamnesis form with vital signs collection including blood pressure, heart rate, temperature, and weight measurements with real-time validation*
+
+### Medical Records Management  
+![Medical Records Listing](./docs/images/medical-records-listing.png)
+*Medical records dashboard with status tracking, search functionality, and consultation workflow actions*
+
+### Dashboard Overview
+![Dashboard](./docs/images/dashboard.png)
+*Application dashboard showing statistics, recent medical records, and quick access to key features*
+
+## 🚀 Development Commands
+
+Laravel 12 includes modern development scripts for enhanced productivity:
+
+### Quick Development Start
+```bash
+# Single command to start all development services
+composer run dev
+# This runs: PHP server + Queue worker + Logs (Pail) + Vite HMR
+
+# For real-time WebSocket features, also run in a separate terminal:
+php artisan reverb:start
+
+# Individual commands
+php artisan serve          # Laravel development server
+npm run dev               # Vite HMR for frontend
+php artisan queue:listen  # Background job processing  
+php artisan pail          # Real-time log monitoring
+php artisan reverb:start  # WebSocket server for real-time features
+```
+
+### Production Deployment
+```bash
+# Build optimized assets
+npm run build
+
+# Or with SSR support
+composer run dev:ssr
+npm run build:ssr
+```
+
+### Code Quality Tools
+```bash
+# PHP formatting with Laravel Pint
+./vendor/bin/pint
+
+# Frontend formatting with Prettier
+npm run format
+npm run format:check
+
+# ESLint for Vue
+npm run lint
+```
+
+## 🌐 Real-time WebSocket Setup (Optional)
 
 This application includes **real-time broadcasting** for live updates of medical records. You can choose between two WebSocket solutions:
 
@@ -306,50 +381,6 @@ php artisan test:websocket --record-id=1
 - 🔄 **Auto-reconnection**: Handles connection drops gracefully
 
 **See detailed setup guide:** `docs/ENVIRONMENT_SETUP.md`
-
-## 🚀 Development Commands
-
-Laravel 12 includes modern development scripts for enhanced productivity:
-
-### Quick Development Start
-```bash
-# Single command to start all development services
-composer run dev
-# This runs: PHP server + Queue worker + Logs (Pail) + Vite HMR
-
-# For real-time WebSocket features, also run in a separate terminal:
-php artisan reverb:start
-
-# Individual commands
-php artisan serve          # Laravel development server
-npm run dev               # Vite HMR for frontend
-php artisan queue:listen  # Background job processing  
-php artisan pail          # Real-time log monitoring
-php artisan reverb:start  # WebSocket server for real-time features
-```
-
-### Production Deployment
-```bash
-# Build optimized assets
-npm run build
-
-# Or with SSR support
-composer run dev:ssr
-npm run build:ssr
-```
-
-### Code Quality Tools
-```bash
-# PHP formatting with Laravel Pint
-./vendor/bin/pint
-
-# Frontend formatting with Prettier
-npm run format
-npm run format:check
-
-# ESLint for Vue
-npm run lint
-```
 
 ## 📁 Project Structure
 
@@ -609,4 +640,32 @@ Since this is an Inertia.js application, we use server-side routing:
 
 ### Patients
 - `GET /patients` - Index with search functionality
-- `GET /patients/create`
+- `GET /patients/create` - Create new patient
+- `POST /patients` - Store new patient
+- `GET /patients/{id}` - Show patient details
+- `GET /patients/{id}/edit` - Edit patient form
+- `PUT /patients/{id}` - Update patient
+- `DELETE /patients/{id}` - Delete patient
+
+### Anamnesis
+- `GET /anamnesis` - Index with patient vital signs
+- `GET /anamnesis/create` - Create new anamnesis
+- `POST /anamnesis` - Store new anamnesis
+- `GET /anamnesis/{id}` - Show anamnesis details
+- `GET /anamnesis/{id}/edit` - Edit anamnesis form
+- `PUT /anamnesis/{id}` - Update anamnesis
+- `DELETE /anamnesis/{id}` - Delete anamnesis
+
+---
+
+## 📄 License
+
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## 🤝 Contributing
+
+This is a demo project for showcase purposes. While contributions are welcome, please note that this application is designed for demonstration and learning rather than production use.
+
+## 📞 Support
+
+For questions about this demo application, please open an issue in the repository.
