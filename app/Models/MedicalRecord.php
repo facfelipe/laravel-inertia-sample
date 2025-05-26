@@ -26,21 +26,6 @@ class MedicalRecord extends Model
     ];
 
     /**
-     * Boot the model and set default status.
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::created(function ($medicalRecord) {
-            // Only set status if the record doesn't already have one
-            if (!$medicalRecord->statuses()->exists()) {
-                $medicalRecord->setStatus(self::STATUS_PENDING);
-            }
-        });
-    }
-
-    /**
      * Get all available statuses.
      */
     public static function getStatuses(): array
