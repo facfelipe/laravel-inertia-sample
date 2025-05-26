@@ -6,8 +6,25 @@
           <div class="p-6 bg-white border-b border-gray-200">
             <!-- Hero Section -->
             <div class="mb-8">
-              <h1 class="text-2xl font-bold mb-4 text-gray-900">Dashboard</h1>
-              <p class="mb-5 text-gray-700">A comprehensive solution for managing patient medical information.</p>
+              <div class="flex items-center justify-between">
+                <div>
+                  <h1 class="text-2xl font-bold mb-4 text-gray-900">Dashboard</h1>
+                  <p class="mb-5 text-gray-700">A comprehensive solution for managing patient medical information.</p>
+                </div>
+                <!-- Real-time connection indicator -->
+                <div class="flex items-center space-x-2">
+                  <div :class="[
+                    'w-3 h-3 rounded-full',
+                    isConnected ? 'bg-green-500' : 'bg-red-500'
+                  ]"></div>
+                  <span class="text-sm text-gray-600">
+                    {{ isConnected ? 'Live' : 'Offline' }}
+                  </span>
+                  <span v-if="lastUpdate" class="text-xs text-gray-400">
+                    Updated {{ formatTimeAgo(lastUpdate) }}
+                  </span>
+                </div>
+              </div>
               <Link 
                 href="/medical-form" 
                 class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
@@ -26,8 +43,9 @@
                       <path d="M10 12.5a1 1 0 0 0-1 1v1a1 1 0 0 0 2 0v-1a1 1 0 0 0-1-1Zm0-1.5a1.5 1.5 0 1 0-1.5-1.5A1.5 1.5 0 0 0 10 11Z"/>
                     </svg>
                   </div>
-                  <h5 class="ml-2 text-base font-semibold text-gray-900">Patient Records</h5>
+                  <h5 class="ml-2 text-base font-semibold text-gray-900">Total Records</h5>
                 </div>
+                <p class="text-2xl font-bold text-blue-600 mb-1">{{ realtimeStats.total_records || 0 }}</p>
                 <p class="text-sm text-gray-600">Manage patient health information in one place.</p>
               </div>
               
@@ -40,8 +58,9 @@
                       <path d="M8.961 16a.93.93 0 0 0 .189-.019l3.4-.679a.961.961 0 0 0 .49-.263l6.118-6.117a2.884 2.884 0 0 0-4.079-4.078l-6.117 6.117a.96.96 0 0 0-.263.491l-.679 3.4A.961.961 0 0 0 8.961 16Zm7.477-9.8a.958.958 0 0 1 .68-.281.961.961 0 0 1 .682 1.644l-.315.315-1.36-1.36.313-.318Zm-5.911 5.911 4.236-4.236 1.359 1.359-4.236 4.237-1.7.339.341-1.699Z"/>
                     </svg>
                   </div>
-                  <h5 class="ml-2 text-base font-semibold text-gray-900">Medical Forms</h5>
+                  <h5 class="ml-2 text-base font-semibold text-gray-900">This Month</h5>
                 </div>
+                <p class="text-2xl font-bold text-green-600 mb-1">{{ realtimeStats.records_this_month || 0 }}</p>
                 <p class="text-sm text-gray-600">Multi-step forms for capturing medical data.</p>
               </div>
               
@@ -52,8 +71,9 @@
                       <path d="M0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm14-7.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm-5-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm-5-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1Zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1ZM20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4Z"/>
                     </svg>
                   </div>
-                  <h5 class="ml-2 text-base font-semibold text-gray-900">Medical History</h5>
+                  <h5 class="ml-2 text-base font-semibold text-gray-900">Pending</h5>
                 </div>
+                <p class="text-2xl font-bold text-purple-600 mb-1">{{ realtimeStats.status_counts?.Pending || 0 }}</p>
                 <p class="text-sm text-gray-600">Track and review patient medical history.</p>
               </div>
             </div>
@@ -70,19 +90,25 @@
                   <tr>
                     <th scope="col" class="px-6 py-3">Last Updated</th>
                     <th scope="col" class="px-6 py-3">Patient</th>
+                    <th scope="col" class="px-6 py-3">Status</th>
                     <th scope="col" class="px-6 py-3">Diagnosis</th>
                     <th scope="col" class="px-6 py-3">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-if="!medicalRecords || medicalRecords.length === 0" class="bg-white border-b">
-                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                  <tr v-if="!realtimeMedicalRecords || realtimeMedicalRecords.length === 0" class="bg-white border-b">
+                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">
                       No medical records found
                     </td>
                   </tr>
-                  <tr v-for="record in displayedRecords" :key="record.id" class="bg-white border-b hover:bg-gray-50">
+                  <tr v-for="record in displayedRecords" :key="record.id" class="bg-white border-b hover:bg-gray-50 transition-colors">
                     <td class="px-6 py-4">{{ formatDate(record.updated_at) }}</td>
                     <td class="px-6 py-4">{{ record.patient?.name || 'Unknown' }}</td>
+                    <td class="px-6 py-4">
+                      <span :class="getStatusClass(record.current_status)" class="px-2 py-1 text-xs rounded-full">
+                        {{ record.current_status || 'Unknown' }}
+                      </span>
+                    </td>
                     <td class="px-6 py-4">
                       <span :class="getSeverityClass(record)" class="px-2 py-1 text-xs rounded-full">
                         {{ record.diagnosis || 'Not diagnosed' }}
@@ -119,20 +145,39 @@
 
 <script setup>
 import { Link } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import MainLayout from '@/Layouts/MainLayout.vue';
+import { useMedicalRecordsRealtime } from '@/Composables/useMedicalRecordsRealtime.js';
 
 // Define props to receive medical records from the controller
 const props = defineProps({
   medicalRecords: {
     type: Array,
     default: () => []
+  },
+  stats: {
+    type: Object,
+    default: () => ({})
   }
+});
+
+// Initialize real-time functionality
+const {
+  medicalRecords: realtimeMedicalRecords,
+  stats: realtimeStats,
+  isConnected,
+  lastUpdate,
+  initializeRealtime
+} = useMedicalRecordsRealtime();
+
+// Initialize with server data
+onMounted(() => {
+  initializeRealtime(props.medicalRecords, props.stats);
 });
 
 // Display only the latest 5 records
 const displayedRecords = computed(() => {
-  return (props.medicalRecords || [])
+  return (realtimeMedicalRecords.value || [])
     .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
     .slice(0, 5);
 });
@@ -142,8 +187,40 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
-    day: 'numeric'
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
   });
+};
+
+const formatTimeAgo = (date) => {
+  const now = new Date();
+  const diff = now - date;
+  const minutes = Math.floor(diff / 60000);
+  
+  if (minutes < 1) return 'just now';
+  if (minutes < 60) return `${minutes}m ago`;
+  
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+};
+
+const getStatusClass = (status) => {
+  switch (status) {
+    case 'Pending':
+      return 'bg-yellow-100 text-yellow-800';
+    case 'Attending':
+      return 'bg-blue-100 text-blue-800';
+    case 'Finalized':
+      return 'bg-green-100 text-green-800';
+    case 'Needs Follow-up':
+      return 'bg-red-100 text-red-800';
+    default:
+      return 'bg-gray-100 text-gray-800';
+  }
 };
 
 const getSeverityClass = (record) => {

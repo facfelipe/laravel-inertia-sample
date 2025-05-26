@@ -3,6 +3,7 @@ import { ref, computed, watch, onMounted } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import MainLayout from '@/Layouts/MainLayout.vue';
 import { debounce } from 'lodash';
+import { useMedicalRecordsRealtime } from '@/Composables/useMedicalRecordsRealtime.js';
 
 // Receive props from Inertia
 const props = defineProps({
@@ -24,6 +25,21 @@ const props = defineProps({
   }
 });
 
+// Initialize real-time functionality
+const {
+  medicalRecords: realtimeMedicalRecords,
+  stats: realtimeStats,
+  isConnected,
+  lastUpdate,
+  initializeRealtime
+} = useMedicalRecordsRealtime();
+
+// Initialize with server data
+onMounted(() => {
+  console.log('🔧 Initializing real-time with', props.medicalRecords.data?.length || 0, 'records');
+  initializeRealtime(props.medicalRecords.data || [], props.stats);
+});
+
 // Reactive filter state
 const localFilters = ref({
   patient_filter: props.filters.patient_filter || '',
@@ -39,7 +55,28 @@ const localFilters = ref({
 const isLoading = ref(false);
 
 // Computed properties
-const hasRecords = computed(() => props.medicalRecords.data && props.medicalRecords.data.length > 0);
+const hasRecords = computed(() => {
+  // Use real-time data if available, otherwise fall back to props
+  const records = realtimeMedicalRecords.value.length > 0 ? realtimeMedicalRecords.value : props.medicalRecords.data;
+  return records && records.length > 0;
+});
+
+// Determine which data source to use
+const displayedRecords = computed(() => {
+  // Always prioritize real-time data if WebSocket is connected and has data
+  if (isConnected.value && realtimeMedicalRecords.value.length > 0) {
+    return realtimeMedicalRecords.value;
+  }
+  
+  // Fall back to server data
+  return props.medicalRecords.data || [];
+});
+
+// Show pagination only when using server data (not real-time)
+const showPagination = computed(() => {
+  return !isConnected.value && props.medicalRecords.last_page > 1;
+});
+
 const hasFilters = computed(() => {
   return localFilters.value.patient_filter || 
          localFilters.value.date_from ||
@@ -53,8 +90,25 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
-    day: 'numeric'
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
   });
+};
+
+const formatTimeAgo = (date) => {
+  const now = new Date();
+  const diff = now - date;
+  const minutes = Math.floor(diff / 60000);
+  
+  if (minutes < 1) return 'just now';
+  if (minutes < 60) return `${minutes}m ago`;
+  
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
 };
 
 // Apply filters to the server
@@ -145,15 +199,30 @@ watch(() => localFilters.value.per_page, applyFilters);
             <h1 class="text-2xl font-bold text-gray-900">Medical Records</h1>
             <p class="text-gray-600">Manage and view all medical records</p>
           </div>
-          <Link 
-            href="/medical-form" 
-            class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-            </svg>
-            New Record
-          </Link>
+          <div class="flex items-center space-x-4">
+            <!-- Real-time connection indicator -->
+            <div class="flex items-center space-x-2">
+              <div :class="[
+                'w-3 h-3 rounded-full',
+                isConnected ? 'bg-green-500' : 'bg-red-500'
+              ]"></div>
+              <span class="text-sm text-gray-600">
+                {{ isConnected ? 'Live' : 'Offline' }}
+              </span>
+              <span v-if="lastUpdate" class="text-xs text-gray-400">
+                Updated {{ formatTimeAgo(lastUpdate) }}
+              </span>
+            </div>
+            <Link 
+              href="/medical-form" 
+              class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+              New Record
+            </Link>
+          </div>
         </div>
 
         <!-- Stats Cards -->
@@ -166,7 +235,7 @@ watch(() => localFilters.value.per_page, applyFilters);
                 </svg>
               </div>
               <p class="text-xs sm:text-sm font-medium text-gray-600 mb-1">Total Records</p>
-              <p class="text-2xl sm:text-4xl font-bold text-gray-900">{{ stats.total_records }}</p>
+              <p class="text-2xl sm:text-4xl font-bold text-gray-900">{{ realtimeStats.total_records || stats.total_records || 0 }}</p>
             </div>
           </div>
 
@@ -178,7 +247,7 @@ watch(() => localFilters.value.per_page, applyFilters);
                 </svg>
               </div>
               <p class="text-xs sm:text-sm font-medium text-gray-600 mb-1">This Month</p>
-              <p class="text-2xl sm:text-4xl font-bold text-gray-900">{{ stats.records_this_month }}</p>
+              <p class="text-2xl sm:text-4xl font-bold text-gray-900">{{ realtimeStats.records_this_month || stats.records_this_month || 0 }}</p>
             </div>
           </div>
 
@@ -190,7 +259,7 @@ watch(() => localFilters.value.per_page, applyFilters);
                 </svg>
               </div>
               <p class="text-xs sm:text-sm font-medium text-gray-600 mb-1">Pending</p>
-              <p class="text-2xl sm:text-4xl font-bold text-gray-900">{{ stats.status_counts?.Pending || 0 }}</p>
+              <p class="text-2xl sm:text-4xl font-bold text-gray-900">{{ realtimeStats.status_counts?.Pending || stats.status_counts?.Pending || 0 }}</p>
             </div>
           </div>
 
@@ -202,7 +271,7 @@ watch(() => localFilters.value.per_page, applyFilters);
                 </svg>
               </div>
               <p class="text-xs sm:text-sm font-medium text-gray-600 mb-1">Total Patients</p>
-              <p class="text-2xl sm:text-4xl font-bold text-gray-900">{{ stats.total_patients }}</p>
+              <p class="text-2xl sm:text-4xl font-bold text-gray-900">{{ stats.total_patients || 0 }}</p>
             </div>
           </div>
         </div>
@@ -361,7 +430,7 @@ watch(() => localFilters.value.per_page, applyFilters);
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="record in medicalRecords.data" :key="record.id" class="hover:bg-gray-50">
+                <tr v-for="record in displayedRecords" :key="record.id" class="hover:bg-gray-50">
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {{ formatDate(record.updated_at) }}
                   </td>
@@ -413,7 +482,7 @@ watch(() => localFilters.value.per_page, applyFilters);
           </div>
 
           <!-- Pagination -->
-          <div v-if="hasRecords && medicalRecords.last_page > 1" class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+          <div v-if="showPagination" class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
             <div class="flex items-center justify-between">
               <div class="flex-1 flex justify-between sm:hidden">
                 <button

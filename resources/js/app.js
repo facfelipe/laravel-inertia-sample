@@ -9,6 +9,9 @@ import '../css/app.css'
 // Import Flowbite for initialization
 import 'flowbite'
 
+// Import Echo for WebSocket support
+import './echo'
+
 // Initialize Flowbite
 document.addEventListener('DOMContentLoaded', () => {
   // Flowbite is automatically initialized through the imported script
