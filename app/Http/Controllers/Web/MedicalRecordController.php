@@ -8,7 +8,10 @@ use App\Services\MedicalRecordService;
 use App\Services\PatientService;
 use App\Services\AnamnesisService;
 use App\Http\Requests\MedicalRecord\StoreMedicalRecordRequest;
+use App\Http\Requests\MedicalRecord\UpdateMedicalRecordRequest;
 use App\Http\Requests\MedicalRecord\IndexMedicalRecordRequest;
+use App\Http\Requests\MedicalRecord\UpdateConsultationRequest;
+use App\Http\Requests\MedicalRecord\StartConsultationRequest;
 use App\Services\MedicalRecordQueryService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -124,7 +127,7 @@ class MedicalRecordController extends Controller
         ]);
     }
 
-    public function update(StoreMedicalRecordRequest $request, $id)
+    public function update(UpdateMedicalRecordRequest $request, $id)
     {
         try {
             $validatedData = $request->validated();
@@ -167,7 +170,7 @@ class MedicalRecordController extends Controller
     /**
      * Start consultation - change status to Attending
      */
-    public function startConsultation($id)
+    public function startConsultation(StartConsultationRequest $request, $id)
     {
         try {
             $medicalRecord = $this->medicalRecordService->getById($id);
@@ -228,16 +231,10 @@ class MedicalRecordController extends Controller
     /**
      * Update consultation and status
      */
-    public function updateConsultation(Request $request, $id)
+    public function updateConsultation(UpdateConsultationRequest $request, $id)
     {
-        $request->validate([
-            'diagnosis' => 'required|string|max:1000',
-            'treatment' => 'required|string|max:1000',
-            'notes' => 'nullable|string|max:1000',
-            'status' => 'required|in:' . MedicalRecord::STATUS_FINALIZED . ',' . MedicalRecord::STATUS_NEEDS_FOLLOWUP
-        ]);
-
         try {
+            $validatedData = $request->validated();
             $medicalRecord = $this->medicalRecordService->getById($id);
             
             if (!$medicalRecord) {
@@ -247,13 +244,13 @@ class MedicalRecordController extends Controller
             
             // Update the medical record
             $medicalRecord->update([
-                'diagnosis' => $request->diagnosis,
-                'treatment' => $request->treatment,
-                'notes' => $request->notes
+                'diagnosis' => $validatedData['diagnosis'],
+                'treatment' => $validatedData['treatment'],
+                'notes' => $validatedData['notes']
             ]);
             
             // Update status
-            $medicalRecord->setStatus($request->status);
+            $medicalRecord->setStatus($validatedData['status']);
             
             return redirect()->route('medical-records.show', $id)
                 ->with('success', 'Consultation completed successfully');
